@@ -1161,8 +1161,9 @@ class EnhancedTutorCoursePage {
                                         <button class="lesson-bookmark-btn <?php echo $lesson['is_bookmarked'] ? 'bookmarked' : ''; ?>"
                                                 onclick="event.stopPropagation(); toggleLessonBookmark(<?php echo $lesson['id']; ?>, this);"
                                                 title="<?php echo $lesson['is_bookmarked'] ? 'Remove bookmark' : 'Bookmark this lesson'; ?>"
+                                                aria-label="<?php echo $lesson['is_bookmarked'] ? 'Remove bookmark' : 'Bookmark this lesson'; ?>"
                                                 data-lesson-id="<?php echo $lesson['id']; ?>">
-                                            <?php echo $lesson['is_bookmarked'] ? '★' : '☆'; ?>
+                                            <span class="bookmark-star"><?php echo $lesson['is_bookmarked'] ? '★' : '☆'; ?></span>
                                         </button>
                                     </div>
 
@@ -1215,8 +1216,9 @@ class EnhancedTutorCoursePage {
                                     <button class="module-bookmark-btn <?php echo $lesson['is_bookmarked'] ? 'bookmarked' : ''; ?>"
                                             onclick="event.stopPropagation(); toggleLessonBookmark(<?php echo $lesson['id']; ?>, this);"
                                             title="<?php echo $lesson['is_bookmarked'] ? 'Remove bookmark' : 'Bookmark this lesson'; ?>"
+                                            aria-label="<?php echo $lesson['is_bookmarked'] ? 'Remove bookmark' : 'Bookmark this lesson'; ?>"
                                             data-lesson-id="<?php echo $lesson['id']; ?>">
-                                        <?php echo $lesson['is_bookmarked'] ? '★' : '☆'; ?>
+                                        <span class="bookmark-star"><?php echo $lesson['is_bookmarked'] ? '★' : '☆'; ?></span>
                                     </button>
                                 </div>
 
@@ -1666,54 +1668,194 @@ class EnhancedTutorCoursePage {
             border-radius: 4px;
         }
 
-        /* Modern Bookmark Button Styles */
+        /* Enhanced Modern Bookmark Button Styles */
         .lesson-bookmark-btn,
         .module-bookmark-btn {
             position: absolute;
-            top: 6px;
-            right: 6px;
-            background: rgba(255, 255, 255, 0.95);
-            border: none;
-            width: 32px;
-            height: 32px;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.98);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             z-index: 10;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            color: #9ca3af;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1);
+            color: #6b7280;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            outline: none;
         }
 
         .lesson-bookmark-btn:hover,
         .module-bookmark-btn:hover {
-            transform: scale(1.15);
-            background: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: scale(1.2);
+            background: #ffffff;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 2px 6px rgba(0, 0, 0, 0.15);
+            border-color: rgba(59, 130, 246, 0.3);
         }
 
+        .lesson-bookmark-btn:active,
+        .module-bookmark-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Bookmarked state - Golden/Yellow theme */
         .lesson-bookmark-btn.bookmarked,
         .module-bookmark-btn.bookmarked {
             color: #f59e0b;
-            background: #fff;
+            background: #fffbeb;
+            border-color: rgba(245, 158, 11, 0.3);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3), 0 1px 3px rgba(245, 158, 11, 0.2);
         }
 
         .lesson-bookmark-btn.bookmarked:hover,
         .module-bookmark-btn.bookmarked:hover {
-            transform: scale(1.15) rotate(5deg);
+            transform: scale(1.2) rotate(8deg);
+            color: #d97706;
+            background: #fef3c7;
+            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4), 0 2px 8px rgba(245, 158, 11, 0.25);
         }
 
+        /* Loading state */
         .lesson-bookmark-btn.loading,
         .module-bookmark-btn.loading {
-            animation: pulse 0.5s ease-in-out;
+            pointer-events: none;
+            opacity: 0.8;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+        .bookmark-spinner {
+            display: inline-block;
+            animation: spin-bookmark 0.8s linear infinite;
+        }
+
+        @keyframes spin-bookmark {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Bookmark animation when toggled */
+        .lesson-bookmark-btn.bookmark-animate,
+        .module-bookmark-btn.bookmark-animate {
+            animation: bookmark-pulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes bookmark-pulse {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.3); }
+            50% { transform: scale(0.9); }
+            75% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        /* Improved star icon styling */
+        .bookmark-star {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+        }
+
+        .bookmarked .bookmark-star {
+            filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
+        }
+
+        /* Focus state for accessibility */
+        .lesson-bookmark-btn:focus,
+        .module-bookmark-btn:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* Ripple effect on click */
+        .lesson-bookmark-btn::after,
+        .module-bookmark-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s, opacity 0.6s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .lesson-bookmark-btn:active::after,
+        .module-bookmark-btn:active::after {
+            width: 60px;
+            height: 60px;
+            opacity: 1;
+            transition: 0s;
+        }
+
+        /* Tooltip enhancement */
+        .lesson-bookmark-btn[title],
+        .module-bookmark-btn[title] {
+            position: relative;
+        }
+
+        .lesson-bookmark-btn[title]:hover::before,
+        .module-bookmark-btn[title]:hover::before {
+            content: attr(title);
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 6px;
+            white-space: nowrap;
+            z-index: 1000;
+            animation: tooltip-fade-in 0.2s ease;
+            pointer-events: none;
+        }
+
+        @keyframes tooltip-fade-in {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Pulsing glow for bookmarked items */
+        .lesson-bookmark-btn.bookmarked,
+        .module-bookmark-btn.bookmarked {
+            animation: bookmark-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes bookmark-glow {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3), 0 1px 3px rgba(245, 158, 11, 0.2);
+            }
+            50% {
+                box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5), 0 1px 5px rgba(245, 158, 11, 0.3);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .lesson-bookmark-btn,
+            .module-bookmark-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
         }
 
         .sidebar-lesson-details {
@@ -2237,7 +2379,7 @@ class EnhancedTutorCoursePage {
         ?>
         <script>
         /**
-         * Modern Bookmark Toggle Function
+         * Modern Bookmark Toggle Function - FIXED
          */
         function toggleLessonBookmark(lessonId, btn) {
             // Prevent loading lesson when clicking bookmark
@@ -2246,9 +2388,11 @@ class EnhancedTutorCoursePage {
                 event.preventDefault();
             }
 
-            // Add loading state
+            // Add loading state with animation
             btn.classList.add('loading');
             btn.disabled = true;
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<span class="bookmark-spinner">⟳</span>';
 
             jQuery.ajax({
                 url: tutor_ajax.ajax_url,
@@ -2263,32 +2407,46 @@ class EnhancedTutorCoursePage {
                     btn.disabled = false;
 
                     if (response.success) {
-                        // Update all bookmark buttons for this lesson
-                        const allBookmarkBtns = document.querySelectorAll('[data-lesson-id="' + lessonId + '"]');
+                        // FIXED: Only select bookmark buttons, not the lesson cards
+                        const allBookmarkBtns = document.querySelectorAll(
+                            '.lesson-bookmark-btn[data-lesson-id="' + lessonId + '"], ' +
+                            '.module-bookmark-btn[data-lesson-id="' + lessonId + '"]'
+                        );
+
                         allBookmarkBtns.forEach(function(button) {
+                            // Add pulse animation
+                            button.classList.add('bookmark-animate');
+                            setTimeout(function() {
+                                button.classList.remove('bookmark-animate');
+                            }, 600);
+
                             if (response.data.is_bookmarked) {
                                 button.classList.add('bookmarked');
-                                button.innerHTML = '★';
+                                button.innerHTML = '<span class="bookmark-star">★</span>';
                                 button.title = 'Remove bookmark';
+                                button.setAttribute('aria-label', 'Remove bookmark');
                             } else {
                                 button.classList.remove('bookmarked');
-                                button.innerHTML = '☆';
+                                button.innerHTML = '<span class="bookmark-star">☆</span>';
                                 button.title = 'Bookmark this lesson';
+                                button.setAttribute('aria-label', 'Bookmark this lesson');
                             }
                         });
 
-                        // Show notification
+                        // Show notification with icon
                         const message = response.data.is_bookmarked ?
                             '🔖 Lesson bookmarked!' :
-                            'Bookmark removed';
+                            '📌 Bookmark removed';
                         showNotification(message, response.data.is_bookmarked ? 'success' : 'info');
                     } else {
+                        btn.innerHTML = originalContent;
                         showNotification(response.data.message || 'Error toggling bookmark', 'error');
                     }
                 },
                 error: function(xhr, status, error) {
                     btn.classList.remove('loading');
                     btn.disabled = false;
+                    btn.innerHTML = originalContent;
                     console.error('Bookmark error:', error);
                     showNotification('Failed to toggle bookmark', 'error');
                 }
